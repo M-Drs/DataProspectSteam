@@ -18,9 +18,9 @@ def insert_games_in_database(Resultat) :
         Supported_Languages TEXT,
         Platforms TEXT,
         Metacritic_score TEXT,
-        Metacritic_url TEXT
-        Steam_score INT
-        Total_positive INT
+        Metacritic_url TEXT,
+        Steam_score INT,
+        Total_positive INT,
         Total_negative INT
         )
     """)
@@ -30,7 +30,7 @@ def insert_games_in_database(Resultat) :
     INSERT OR IGNORE INTO games (APP_ID, Game, Release_Date, Price, Genres, Detailed_Description, Header_Image, Supported_Languages, Platforms, Metacritic_score,Metacritic_url)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        int(Resultat["APP_ID"]),
+        APP_ID := int(Resultat["APP_ID"]),
         Resultat["Game"],
         Resultat.get("Release_Date", "N/A"),  # Default to "N/A"
         Resultat.get("Price", "N/A"),  # Default to "Free"
@@ -45,7 +45,7 @@ def insert_games_in_database(Resultat) :
 
     # Commit the transaction and close the connection
     conn.commit()
-    cursor.execute("""SELECT * FROM GAMES order by APP_ID DESC LIMIT 1""")
+    cursor.execute(f"""SELECT APP_ID, Game, Release_Date, Price, Genres, Platforms, Metacritic_score,Metacritic_url, Steam_score, total_positive,total_negative FROM GAMES WHERE APP_ID = {APP_ID}""")
     rows = cursor.fetchall()
     for row in rows:
         print(row)
@@ -69,10 +69,10 @@ def insert_game_review_score(i, query_summary) :
 
     # Commit the transaction and close the connection
     conn.commit()
-    cursor.execute(f"""SELECT game, steam_score, total_positive, total_negative, app_id FROM GAMES where APP_ID = {APP_ID}""")
+    cursor.execute(f"""SELECT game, Steam_score, total_positive, total_negative FROM GAMES where APP_ID = {APP_ID}""")
     rows = cursor.fetchall()
     for row in rows:
-        print(f"ligne updatée : {row}")
+        print(f"score reviews updaté : {row}")
     conn.close()
 
 

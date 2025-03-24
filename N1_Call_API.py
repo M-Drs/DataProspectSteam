@@ -20,7 +20,7 @@ def get_steam_details(APP_ID):
     if data[APP_ID]["success"] == False :
         print(f"ID not found : {APP_ID}")
         return {
-            "Code_retour" : True,
+            "Code_retour" : False,
             "APP_ID": APP_ID,
             "Game": ""
         }
@@ -37,7 +37,7 @@ def get_steam_details(APP_ID):
     metacritic_url = game_info.get("metacritic",{}).get("url", "N/A")
 
     #print(f"ALL_INFO{game_info}")
-    print(f"\n APP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nDetailed_description: {detailed_description}\nHeader_image: {header_image}\nSupported_languages: {supported_languages}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}\n")
+    print(f"\n APP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nDetailed_description: (enlevée du print)\nHeader_image: {header_image}\nSupported_languages: (enlevée du print)\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}\n")
 
     return {
         "Code_retour" : True,
@@ -72,12 +72,9 @@ def get_steam_review_score(APP_ID):
 
     data = response.json()
     query_summary = data.get("query_summary","")
+
     return (query_summary)
-    ## print(query_summary["num_reviews"], query_summary["review_score"], query_summary["total_positive"], query_summary["total_negative"])
-    #review_score = query_summary["review_score"]
-    #total_positive = query_summary["total_positive"]
-    #total_negative = query_summary["total_negative"]
-    #insert_game_review_score(APP_ID, review_score,total_positive,total_negative) 
+    #print(query_summary["num_reviews"], query_summary["review_score"], query_summary["total_positive"], query_summary["total_negative"])
 
     
 def get_steam_all_reviews(APP_ID):
@@ -142,6 +139,6 @@ if __name__ == "__main__":
 
     #reviews = fetch_reviews(570)
     #print(reviews)
-    print("ok")
+    get_steam_review_score(571)
 
     
