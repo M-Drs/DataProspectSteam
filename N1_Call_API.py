@@ -72,11 +72,12 @@ def get_steam_review_score(APP_ID):
 
     data = response.json()
     query_summary = data.get("query_summary","")
-    # print(query_summary["num_reviews"], query_summary["review_score"], query_summary["total_positive"], query_summary["total_negative"])
-    review_score = query_summary["review_score"]
-    total_positive = query_summary["total_positive"]
-    total_negative = query_summary["total_negative"]
-    insert_game_review_score(APP_ID, review_score,total_positive,total_negative) 
+    return (query_summary)
+    ## print(query_summary["num_reviews"], query_summary["review_score"], query_summary["total_positive"], query_summary["total_negative"])
+    #review_score = query_summary["review_score"]
+    #total_positive = query_summary["total_positive"]
+    #total_negative = query_summary["total_negative"]
+    #insert_game_review_score(APP_ID, review_score,total_positive,total_negative) 
 
     
 def get_steam_all_reviews(APP_ID):

@@ -19,7 +19,7 @@ if __name__ == "__main__":
             insert_games_in_database(Resultat)
 
             review_score_general = get_steam_review_score(i)
-            insert_game_review_score()
+            insert_game_review_score(i, review_score_general)
 
         i += 1
         delay = random.uniform(0.3,1)

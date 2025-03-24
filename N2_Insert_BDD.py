@@ -51,13 +51,18 @@ def insert_games_in_database(Resultat) :
         print(row)
     conn.close()
 
-def insert_game_review_score(APP_ID, review_score,total_positive,total_negative) :
+#def insert_game_review_score(APP_ID, review_score,total_positive,total_negative) :
+def insert_game_review_score(i, query_summary) :
 
     conn = sqlite3.connect("steam_games_info.db")
     cursor = conn.cursor()
 
     # Insert data into the database
-    APP_ID=int(APP_ID)
+    APP_ID=int(i)
+    review_score = query_summary["review_score"]
+    total_positive = query_summary["total_positive"]
+    total_negative = query_summary["total_negative"]
+
     cursor.execute(f"""
     Update or ignore games set Steam_score = {review_score}, total_positive = {total_positive}, total_negative = {total_negative} where APP_ID = {APP_ID}
     """ )
