@@ -1,12 +1,16 @@
-from N1_Call_API import get_steam_details, get_steam_review_score ; from N2_Insert_BDD import insert_games_in_database, insert_game_review_score
+from N1_Call_API import get_steam_details, get_steam_review_score ; from N2_Insert_BDD import insert_games_in_database, insert_game_review_score ; from N9_DBviewer import last_max_id
 import time, random
 
+
+def
+
+
 if __name__ == "__main__":
- 
-    i = 30
+    
+    i = last_max_id()
     while i < 99999:
         Resultat = get_steam_details(i)
-        if "Error: API request failed" in Resultat:  # Check if 'Error' is in the return string
+        if "Error: API request failed" in Resultat:  
             time.sleep(random.uniform(10,15))
             i -= 1
         elif Resultat["Code_retour"] == False :

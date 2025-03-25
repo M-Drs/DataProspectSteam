@@ -1,5 +1,5 @@
 import requests, time
-from N2_Insert_BDD import  insert_review_in_datalake
+from N2_Insert_BDD import  insert_review_in_database
 
 
 def get_steam_details(APP_ID):
@@ -14,34 +14,33 @@ def get_steam_details(APP_ID):
         return f"Error: API request failed or returned empty response for {APP_ID}"
 
     if data[APP_ID]["success"] == False :
-        print(f"ID not found : {APP_ID}")
-        return {"Code_retour" : False,"APP_ID": APP_ID,"Game": "" }
+        #print(f"ID not found : {APP_ID}")
+        return {"Code_retour" : False,"APP_ID": APP_ID,"Game": None }
     
     info = data[APP_ID]["data"]
-    name = info.get("name")
-    header_image = info.get("header_image")
-    release_date = info["release_date"].get("date")
-    price = info["price_overview"].get("final_formatted") if "price_overview" in info else "Free"
+    name = info["name"]
+    header_image = info["header_image"]
+    release_date = info["release_date"]["date"]
+    price = info["price_overview"]["final_formatted"] if "price_overview" in info else None
+    gratuit = info["is_free"]
     platforms = [k for k, v in info["platforms"].items() if v]
-    genres = [genre["description"] for genre in info.get("genres", [])]
-    detailed_description = info.get("detailed_description")
-    supported_languages = info.get("supported_languages")
-    metacritic_score = info.get("metacritic",{}).get("score")
-    metacritic_url = info.get("metacritic",{}).get("url")
+    genres = [genre["description"] for genre in info.get("genres",[])]
+    detailed_description = info["detailed_description"]
+    supported_languages = info.get("supported_languages") 
+    metacritic_score = info.get("metacritic",{}).get("score") 
+    metacritic_url = info.get("metacritic",{}).get("url") 
 
-    print(f"\n APP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nDetailed_description: (enlevée du print)\nHeader_image: {header_image}\nSupported_languages: (enlevée du print)\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}\n")
-    return {"Code_retour" : True,"Full_reponse" : response,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
+    print(f"\nAPP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {header_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
+    return {"Code_retour" : True,"Full_reponse" : response,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Gratuit": gratuit,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
             "Header_image": header_image,"Supported_languages": supported_languages,"Platforms": ' | '.join(platforms),"Metacritic_score": metacritic_score,"Metacritic_url": metacritic_url}
 
 def get_steam_review_score(APP_ID):
     
     BASE_URL = f"https://store.steampowered.com/appreviews/{APP_ID}"
-    PARAMS = {
-        "json": 1,
+    PARAMS = {"json": 1,
         "language": "all",  # Change if needed
         "review_type": "all",  # "positive", "negative", or "all"
-        "cursor": "*"  # Initial cursor (Steam requires this format)
-            }
+        "cursor": "*"}  # Initial cursor (Steam requires this format)
     
     response = requests.get(BASE_URL, params=PARAMS)
     if response.status_code != 200:
@@ -90,10 +89,10 @@ def get_steam_all_reviews(APP_ID):
             print(f"Positif: {review["voted_up"]}, Language: {review["language"]}, Votes_up: {review["votes_up"]}")
             print(f"Review: {review['review']}\n{'-'*50}")
 
-            insert_review_in_datalake(review)
+            insert_review_in_database(review,APP_ID)
 
-        # Stop if there are no more reviews
-        if not reviews or not cursor:
+        # Stop if there are no more reviews           if not reviews or not cursor:
+        if not cursor:
             print("No more reviews available.")
             break
 
@@ -112,10 +111,8 @@ def get_steam_all_reviews(APP_ID):
 
 
 if __name__ == "__main__":
- 
-
     #reviews = fetch_reviews(570)
     #print(reviews)
-    get_steam_review_score(571)
+    get_steam_all_reviews(570)
 
     
