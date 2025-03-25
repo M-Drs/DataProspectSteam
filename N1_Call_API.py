@@ -23,18 +23,18 @@ def get_steam_details(APP_ID):
             "Code_retour" : False,
             "APP_ID": APP_ID,
             "Game": ""
-        }
+                }
     game_info = data[APP_ID]["data"]
-    name = game_info.get("name", "N/A")
-    release_date = game_info["release_date"].get("date", "N/A")
+    name = game_info.get("name")
+    release_date = game_info["release_date"].get("date")
     price = game_info["price_overview"].get("final_formatted", "Free") if "price_overview" in game_info else "Free"
     genres = [genre["description"] for genre in game_info.get("genres", [])]
-    detailed_description = game_info.get("detailed_description", "N/A")
-    header_image = game_info.get("header_image", "N/A")
-    supported_languages = game_info.get("supported_languages", "N/A")
+    detailed_description = game_info.get("detailed_description")
+    header_image = game_info.get("header_image")
+    supported_languages = game_info.get("supported_languages")
     platforms = [k for k, v in game_info["platforms"].items() if v]
-    metacritic_score = game_info.get("metacritic",{}).get("score", "N/A")
-    metacritic_url = game_info.get("metacritic",{}).get("url", "N/A")
+    metacritic_score = game_info.get("metacritic",{}).get("score")
+    metacritic_url = game_info.get("metacritic",{}).get("url")
 
     #print(f"ALL_INFO{game_info}")
     print(f"\n APP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nDetailed_description: (enlevée du print)\nHeader_image: {header_image}\nSupported_languages: (enlevée du print)\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}\n")
@@ -53,7 +53,7 @@ def get_steam_details(APP_ID):
         "Platforms": ' | '.join(platforms),
         "Metacritic_score": metacritic_score,
         "Metacritic_url": metacritic_url
-    }
+            }
 
 def get_steam_review_score(APP_ID):
     
@@ -63,7 +63,7 @@ def get_steam_review_score(APP_ID):
         "language": "all",  # Change if needed
         "review_type": "all",  # "positive", "negative", or "all"
         "cursor": "*"  # Initial cursor (Steam requires this format)
-        }
+            }
     
     response = requests.get(BASE_URL, params=PARAMS)
     if response.status_code != 200:

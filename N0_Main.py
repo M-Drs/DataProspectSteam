@@ -5,8 +5,7 @@ if __name__ == "__main__":
  
     i = 1
     while i < 99999:
-        Resultat= get_steam_details(i)
-
+        Resultat = get_steam_details(i)
         if "Error: API request failed" in Resultat:  # Check if 'Error' is in the return string
             time.sleep(random.uniform(10,15))
             i -= 1
