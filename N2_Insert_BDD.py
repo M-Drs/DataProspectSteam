@@ -6,27 +6,14 @@ def insert_games_in_database(Resultat) :
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS games (
-        APP_ID INT PRIMARY KEY,
-        Game TEXT,
-        Release_Date TEXT,
-        Price TEXT,
-        Genres TEXT,
-        Detailed_Description TEXT,
-        Header_Image TEXT,
-        Supported_Languages TEXT,
-        Platforms TEXT,
-        Metacritic_score TEXT,
-        Metacritic_url TEXT,
-        Steam_score INT,
-        Total_positive INT,
-        Total_negative INT
-        )
+        APP_ID INT PRIMARY KEY,Game TEXT,Release_Date TEXT,Price TEXT,Genres TEXT,Detailed_Description TEXT,Header_Image TEXT,
+        Supported_Languages TEXT,Platforms TEXT,Metacritic_score TEXT,Metacritic_url TEXT,Steam_score INT,Total_positive INT,Total_negative INT)
         """)
 
     cursor.execute("""
     INSERT OR IGNORE INTO games (APP_ID, Game, Release_Date, Price, Genres, Detailed_Description, Header_Image, Supported_Languages, Platforms, Metacritic_score,Metacritic_url)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
+        """, (
         APP_ID := int(Resultat["APP_ID"]),
         Resultat["Game"],
         Resultat.get("Release_Date"), 

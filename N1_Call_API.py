@@ -1,59 +1,37 @@
 import requests, time
-from N2_Insert_BDD import insert_game_review_score, insert_review_in_datalake
+from N2_Insert_BDD import  insert_review_in_datalake
 
 
 def get_steam_details(APP_ID):
-# Steam Storefront API endpoint
-    # APP_ID = "570" if APP_ID is None else APP_ID # Example: Dota 2 (Replace with any game's App ID)
+    
     APP_ID = str(APP_ID)
     URL = f"https://store.steampowered.com/api/appdetails?appids={APP_ID}"
-
-    # Fetch game details
     response = requests.get(URL)
+    data = response.json()
+
     if response.status_code != 200 or not response.text.strip():
         print(f"Error: API request failed or returned empty response for {APP_ID}")
         return f"Error: API request failed or returned empty response for {APP_ID}"
 
-    data = response.json()
-
-    # Extract relevant info
     if data[APP_ID]["success"] == False :
         print(f"ID not found : {APP_ID}")
-        return {
-            "Code_retour" : False,
-            "APP_ID": APP_ID,
-            "Game": ""
-                }
-    game_info = data[APP_ID]["data"]
-    name = game_info.get("name")
-    release_date = game_info["release_date"].get("date")
-    price = game_info["price_overview"].get("final_formatted", "Free") if "price_overview" in game_info else "Free"
-    genres = [genre["description"] for genre in game_info.get("genres", [])]
-    detailed_description = game_info.get("detailed_description")
-    header_image = game_info.get("header_image")
-    supported_languages = game_info.get("supported_languages")
-    platforms = [k for k, v in game_info["platforms"].items() if v]
-    metacritic_score = game_info.get("metacritic",{}).get("score")
-    metacritic_url = game_info.get("metacritic",{}).get("url")
+        return {"Code_retour" : False,"APP_ID": APP_ID,"Game": "" }
+    
+    info = data[APP_ID]["data"]
+    name = info.get("name")
+    header_image = info.get("header_image")
+    release_date = info["release_date"].get("date")
+    price = info["price_overview"].get("final_formatted") if "price_overview" in info else "Free"
+    platforms = [k for k, v in info["platforms"].items() if v]
+    genres = [genre["description"] for genre in info.get("genres", [])]
+    detailed_description = info.get("detailed_description")
+    supported_languages = info.get("supported_languages")
+    metacritic_score = info.get("metacritic",{}).get("score")
+    metacritic_url = info.get("metacritic",{}).get("url")
 
-    #print(f"ALL_INFO{game_info}")
     print(f"\n APP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nDetailed_description: (enlevée du print)\nHeader_image: {header_image}\nSupported_languages: (enlevée du print)\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}\n")
-
-    return {
-        "Code_retour" : True,
-        "Full_reponse" : response,
-        "APP_ID": APP_ID,
-        "Game": name,
-        "Release_Date": release_date,
-        "Price": price,
-        "Genres": ' | '.join(genres),
-        "Detailed_description": detailed_description,
-        "Header_image": header_image,
-        "Supported_languages": supported_languages,
-        "Platforms": ' | '.join(platforms),
-        "Metacritic_score": metacritic_score,
-        "Metacritic_url": metacritic_url
-            }
+    return {"Code_retour" : True,"Full_reponse" : response,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
+            "Header_image": header_image,"Supported_languages": supported_languages,"Platforms": ' | '.join(platforms),"Metacritic_score": metacritic_score,"Metacritic_url": metacritic_url}
 
 def get_steam_review_score(APP_ID):
     
@@ -72,9 +50,8 @@ def get_steam_review_score(APP_ID):
 
     data = response.json()
     query_summary = data.get("query_summary","")
-
-    return (query_summary)
     #print(query_summary["num_reviews"], query_summary["review_score"], query_summary["total_positive"], query_summary["total_negative"])
+    return (query_summary)
 
     
 def get_steam_all_reviews(APP_ID):
