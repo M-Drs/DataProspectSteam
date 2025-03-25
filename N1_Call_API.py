@@ -62,7 +62,7 @@ def get_steam_all_reviews(APP_ID):
         "language": "all",  # Change if needed
         "review_type": "all",  # "positive", "negative", or "all"
         "num_per_page": 100,
-        "cursor": "*"  # Initial cursor (Steam requires this format)
+        "cursor": "*"  # Initial cursor (Steam requires this format) AoJ4jNS7ubkCfsHkDg==
         }
     
     while True:
