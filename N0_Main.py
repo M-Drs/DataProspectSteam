@@ -1,14 +1,12 @@
-from N1_Call_API import get_steam_details, get_steam_review_score ; from N2_Insert_BDD import insert_games_in_database, insert_game_review_score ; from N9_DBviewer import last_max_id
+from N1_Call_API import get_steam_details, get_steam_review_score, get_steam_all_reviews ; from N2_Insert_BDD import insert_games_in_database, insert_game_review_score ; from N9_DBviewer import last_max_id,liste_App_ID
 import time, random
 
-
-def
 
 
 if __name__ == "__main__":
     
     i = last_max_id()
-    while i < 99999:
+    while i < 500:
         Resultat = get_steam_details(i)
         if "Error: API request failed" in Resultat:  
             time.sleep(random.uniform(10,15))
@@ -22,5 +20,6 @@ if __name__ == "__main__":
         i += 1
         time.sleep(random.uniform(0.3,1))
 
-        
     
+    for APP_ID,steam_cursor in (liste_ID := liste_App_ID()) :
+            get_steam_all_reviews(APP_ID,steam_cursor)

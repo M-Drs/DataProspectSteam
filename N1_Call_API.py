@@ -1,5 +1,5 @@
 import requests, time
-from N2_Insert_BDD import  insert_review_in_database
+from N2_Insert_BDD import  insert_review_in_database, insert_last_cursor_position
 
 
 def get_steam_details(APP_ID):
@@ -53,7 +53,7 @@ def get_steam_review_score(APP_ID):
     return (query_summary)
 
     
-def get_steam_all_reviews(APP_ID):
+def get_steam_all_reviews(APP_ID,steam_cursor="*"):
     
     BASE_URL = f"https://store.steampowered.com/appreviews/{APP_ID}"
     PARAMS = {
@@ -62,15 +62,10 @@ def get_steam_all_reviews(APP_ID):
         "language": "all",  # Change if needed
         "review_type": "all",  # "positive", "negative", or "all"
         "num_per_page": 100,
-        "cursor": "*"  # Initial cursor (Steam requires this format) AoJ4jNS7ubkCfsHkDg==
-        }
+        "cursor": steam_cursor }
     
+    print(steam_cursor)
     while True:
-
-        # # Make the request
-        # final_url = requests.Request("GET", BASE_URL, params=PARAMS).prepare().url
-        # print(f"Final Request URL: {final_url}")
-
         response = requests.get(BASE_URL, params=PARAMS)
         if response.status_code != 200:
             print(f"Error: Received status code {response.status_code}")
@@ -79,40 +74,30 @@ def get_steam_all_reviews(APP_ID):
         data = response.json()
         reviews = data.get("reviews", [])
 
-        print(cursor := data.get("cursor", ""))
+        print(steam_cursor := data.get("cursor", ""))
         # Update request parameters
-        PARAMS["cursor"] = cursor
+        PARAMS["cursor"] = steam_cursor
 
-        # Process reviews
-        for review in reviews:
-            print(f"User: {review['author']['steamid']}, Playtime: {review['author']['playtime_forever']} mins, ID_review : {review['recommendationid']}")
-            print(f"Positif: {review["voted_up"]}, Language: {review["language"]}, Votes_up: {review["votes_up"]}")
-            print(f"Review: {review['review']}\n{'-'*50}")
-
-            insert_review_in_database(review,APP_ID)
-
-        # Stop if there are no more reviews           if not reviews or not cursor:
-        if not cursor:
+        if  reviews == []:
             print("No more reviews available.")
-            break
+            return
+        else : 
+            for review in reviews:
+                insert_review_in_database(APP_ID,review)
 
-        # Steam API suggests a delay between requests to avoid rate limiting
+        insert_last_cursor_position(APP_ID,steam_cursor)
         time.sleep(1.5)
 
-    
-    if "query_summary" in data:
-        return {
 
-
-            "positive": data["query_summary"]["total_positive"],
-            "negative": data["query_summary"]["total_negative"]
-        }
-    return None
-
+        #if not reviews or not cursor: not steam_cursor or        
+        # print(f"Positif: {review["voted_up"]}, Language: {review["language"]}, Votes_up: {review["votes_up"]}")
+        # print(f"{'-'*50}\nUser: {review['author']['steamid']}, Playtime: {review['author']['playtime_forever']} mins, ID_review : {review['recommendationid']}, Language: {review["language"]}")
+        # print(f"Review: {review['review']}")       
+        
 
 if __name__ == "__main__":
     #reviews = fetch_reviews(570)
     #print(reviews)
-    get_steam_all_reviews(570)
+    get_steam_all_reviews(219)
 
     

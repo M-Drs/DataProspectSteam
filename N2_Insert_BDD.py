@@ -7,7 +7,7 @@ def insert_games_in_database(Resultat) :
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS games (
         APP_ID INT PRIMARY KEY,Game TEXT,Release_Date TEXT,Price TEXT,Is_free INT,Genres TEXT,Detailed_Description TEXT,Header_Image TEXT,
-        Supported_Languages TEXT,Platforms TEXT,Metacritic_score TEXT,Metacritic_url TEXT,Steam_score INT,Total_positive INT,Total_negative INT)
+        Supported_Languages TEXT,Platforms TEXT,Metacritic_score TEXT,Metacritic_url TEXT,Steam_score INT,Total_positive INT,Total_negative INT, Last_cursor_position TXT)
         """)
 
     cursor.execute("""
@@ -33,9 +33,8 @@ def insert_games_in_database(Resultat) :
         print(f"Ligne updatée : {row}")
     conn.close()
 
-def insert_game_review_score(i, query_summary) :
+def insert_game_review_score(APP_ID, query_summary) :
 
-    APP_ID=int(i)
     review_score = query_summary["review_score"]
     total_positive = query_summary["total_positive"]
     total_negative = query_summary["total_negative"]
@@ -43,7 +42,7 @@ def insert_game_review_score(i, query_summary) :
     cursor = conn.cursor()
 
     cursor.execute(f"""
-    Update or ignore games set Steam_score = {review_score}, total_positive = {total_positive}, total_negative = {total_negative} where APP_ID = {APP_ID}
+    Update games set Steam_score = {review_score}, total_positive = {total_positive}, total_negative = {total_negative} where APP_ID = {APP_ID}
     """ )
 
     # Commit the transaction and close the connection
@@ -54,7 +53,7 @@ def insert_game_review_score(i, query_summary) :
         print(f"Notes updatée : {row}\n")
     conn.close()
     
-def insert_review_in_database(Reviews,APP_ID) :
+def insert_review_in_database(APP_ID,Review) :
     conn = sqlite3.connect("steam_games_reviews.db")
     cursor = conn.cursor()
 
@@ -67,16 +66,39 @@ def insert_review_in_database(Reviews,APP_ID) :
         INSERT OR replace INTO reviews (APP_ID, Language, Review, Is_positive, Upvotes, Funvotes, ID)
         VALUES (?, ?, ?, ?, ?, ?, ?)""",(
             APP_ID,
-            Reviews.get("language"),
-            Reviews.get("review"),
-            Reviews.get("voted_up"),
-            Reviews.get("votes_up"),
-            Reviews.get("votes_funny"),
-            Reviews.get("recommendationid")))
+            Review.get("language"),
+            Review.get("review"),
+            Review.get("voted_up"),
+            Review.get("votes_up"),
+            Review.get("votes_funny"),
+            ID := Review.get("recommendationid")))
     
     conn.commit()
-    cursor.execute("""SELECT * FROM reviews order by APP_ID DESC LIMIT 1""")
+    cursor.execute(f"""SELECT APP_ID, Language, ID FROM reviews where ID = {ID} """)
+    rows = cursor.fetchall()
+    print(rows)
+    conn.close()
+
+def insert_last_cursor_position(APP_ID,steam_cursor):
+    
+    conn = sqlite3.connect("steam_games_info.db")
+    cursor = conn.cursor()
+
+    cursor.execute(f"""
+        Update games set Last_cursor_position = "{steam_cursor}" where APP_ID = {APP_ID}""" )
+
+    # Commit the transaction and close the connection
+    conn.commit()
+    cursor.execute(f"""SELECT game, Last_cursor_position FROM GAMES where APP_ID = {APP_ID}""")
     rows = cursor.fetchall()
     for row in rows:
-        print(row)
+        print(f"Cursor updaté : {row}\n")
     conn.close()
+
+
+def insert_in_datalake():
+
+    
+
+
+    pass
