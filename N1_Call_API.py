@@ -1,5 +1,5 @@
 import requests, time
-from N2_Insert_BDD import  insert_review_in_database, insert_last_cursor_position
+from N2_Insert_BDD import load_datalake, insert_review_in_database, insert_last_cursor_position
 
 
 def get_steam_details(APP_ID):
@@ -29,6 +29,12 @@ def get_steam_details(APP_ID):
     supported_languages = info.get("supported_languages") 
     metacritic_score = info.get("metacritic",{}).get("score") 
     metacritic_url = info.get("metacritic",{}).get("url") 
+
+    response_image = requests.get(header_image, stream=True)  # Stream to handle large files
+    if response_image.status_code == 200:
+        load_datalake(data, response_image, name, APP_ID)
+    else:
+        return(f"Failed to download image. Status code: {response.status_code}")
 
     print(f"\nAPP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {header_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
     return {"Code_retour" : True,"Full_reponse" : response,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Gratuit": gratuit,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
@@ -98,6 +104,6 @@ def get_steam_all_reviews(APP_ID,steam_cursor="*"):
 if __name__ == "__main__":
     #reviews = fetch_reviews(570)
     #print(reviews)
-    get_steam_all_reviews(219)
+    get_steam_details(570)
 
     

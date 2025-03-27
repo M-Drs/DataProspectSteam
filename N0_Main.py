@@ -11,14 +11,16 @@ if __name__ == "__main__":
         if "Error: API request failed" in Resultat:  
             time.sleep(random.uniform(10,15))
             i -= 1
+
         elif Resultat["Code_retour"] == False :
             insert_games_in_database(Resultat)
         elif Resultat["Code_retour"] == True :
             insert_games_in_database(Resultat)
+
             review_score_general = get_steam_review_score(i)
             insert_game_review_score(i, review_score_general)
         i += 1
-        time.sleep(random.uniform(0.3,1))
+        time.sleep(random.uniform(0.5,1))
 
     
     for APP_ID,steam_cursor in (liste_ID := liste_App_ID()) :
