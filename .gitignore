@@ -5,7 +5,7 @@ __pycache__/
 
 
 #database
-.db
+*.db
 datalake/
 
 # C extensions
