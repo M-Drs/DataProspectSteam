@@ -25,7 +25,8 @@ def insert_games_in_database(Resultat) :
             Resultat.get("Platforms"),
             Resultat.get("Metacritic_score"),
             Resultat.get("Metacritic_url")))
-
+    
+    # Commit the transaction and close the connection
     conn.commit()
     cursor.execute(f"""SELECT APP_ID, Game, Release_Date, Price, Genres, Platforms, Metacritic_score,Metacritic_url, Steam_score, total_positive,total_negative FROM GAMES WHERE APP_ID = {APP_ID}""")
     rows = cursor.fetchall()
@@ -38,13 +39,12 @@ def insert_game_review_score(APP_ID, query_summary) :
     review_score = query_summary["review_score"]
     total_positive = query_summary["total_positive"]
     total_negative = query_summary["total_negative"]
+
     conn = sqlite3.connect("steam_games_info.db")
     cursor = conn.cursor()
-
     cursor.execute(f"""
-    Update games set Steam_score = {review_score}, total_positive = {total_positive}, total_negative = {total_negative} where APP_ID = {APP_ID}
-    """ )
-
+    Update games set Steam_score = {review_score}, total_positive = {total_positive}, total_negative = {total_negative} where APP_ID = {APP_ID}""" )
+    
     # Commit the transaction and close the connection
     conn.commit()
     cursor.execute(f"""SELECT game, Steam_score, total_positive, total_negative FROM GAMES where APP_ID = {APP_ID}""")
@@ -56,12 +56,9 @@ def insert_game_review_score(APP_ID, query_summary) :
 def insert_review_in_database(APP_ID,Review) :
     conn = sqlite3.connect("steam_games_info.db")
     cursor = conn.cursor()
-
-    # Create table (if not exists)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS reviews (APP_ID INT,Language TXT, Review TEXT, Is_positive INT, Upvotes INT, Funvotes INT, ID INT PRIMARY KEY)""")
 
-    # Insert data into the database
     cursor.execute("""
         INSERT OR replace INTO reviews (APP_ID, Language, Review, Is_positive, Upvotes, Funvotes, ID)
         VALUES (?, ?, ?, ?, ?, ?, ?)""",(
@@ -73,6 +70,7 @@ def insert_review_in_database(APP_ID,Review) :
             Review.get("votes_funny"),
             ID := Review.get("recommendationid")))
     
+    # Commit the transaction and close the connection
     conn.commit()
     cursor.execute(f"""SELECT APP_ID, Language, ID FROM reviews where ID = {ID} """)
     rows = cursor.fetchall()
@@ -83,7 +81,6 @@ def insert_last_cursor_position(APP_ID,steam_cursor):
     
     conn = sqlite3.connect("steam_games_info.db")
     cursor = conn.cursor()
-
     cursor.execute(f"""
         Update games set Last_cursor_position = "{steam_cursor}" where APP_ID = {APP_ID}""" )
 
@@ -95,18 +92,14 @@ def insert_last_cursor_position(APP_ID,steam_cursor):
         print(f"Cursor updaté : {row}\n")
     conn.close()
 
-
 def load_datalake(data,response_image,name, APP_ID):
 
     data_lake_dir = 'datalake'
     if not os.path.exists(data_lake_dir):
         os.makedirs(data_lake_dir)
-
-    # Setup SQLite for metadata
     conn = sqlite3.connect('steam_games_info.db')
     cursor = conn.cursor()
 
-    # Create table for metadata (you can extend this)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS datalake_metadata (
             APP_ID INTEGER PRIMARY KEY,
@@ -130,7 +123,7 @@ def load_datalake(data,response_image,name, APP_ID):
     if "Content-Type" in response_image.headers:
         content_type = response_image.headers["Content-Type"]
         if content_type.startswith("image/"):
-            ext = "." + content_type.split("/")[-1]  # Extract extension (e.g., ".jpg", ".png")
+            ext = "." + content_type.split("/")[-1]  # Extract extension 
     
     file_path_img = os.path.join(data_lake_dir, APP_ID+"_header"+ext)
     with open(file_path_img, "wb") as file:  # Open in binary write mode

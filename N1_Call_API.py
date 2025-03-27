@@ -1,4 +1,4 @@
-import requests, time
+import requests, time, random
 from N2_Insert_BDD import load_datalake, insert_review_in_database, insert_last_cursor_position
 
 
@@ -45,8 +45,8 @@ def get_steam_review_score(APP_ID):
     BASE_URL = f"https://store.steampowered.com/appreviews/{APP_ID}"
     PARAMS = {"json": 1,
         "language": "all",  # Change if needed
-        "review_type": "all",  # "positive", "negative", or "all"
-        "cursor": "*"}  # Initial cursor (Steam requires this format)
+        "review_type": "all",  # positive, negative, or all
+        "cursor": "*"}  # Initial cursor 
     
     response = requests.get(BASE_URL, params=PARAMS)
     if response.status_code != 200:
@@ -57,7 +57,6 @@ def get_steam_review_score(APP_ID):
     query_summary = data.get("query_summary","")
     #print(query_summary["num_reviews"], query_summary["review_score"], query_summary["total_positive"], query_summary["total_negative"])
     return (query_summary)
-
     
 def get_steam_all_reviews(APP_ID,steam_cursor="*"):
     
@@ -75,7 +74,7 @@ def get_steam_all_reviews(APP_ID,steam_cursor="*"):
         response = requests.get(BASE_URL, params=PARAMS)
         if response.status_code != 200:
             print(f"Error: Received status code {response.status_code}")
-            return (f"Error: Received status code {response.status_code}")
+            time.sleep(random.uniform(10,15))
 
         data = response.json()
         reviews = data.get("reviews", [])
