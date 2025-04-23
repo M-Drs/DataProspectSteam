@@ -8,15 +8,32 @@
 # source venv/bin/activate
 # nohup uvicorn main:app --reload --host 0.0.0.0 --host :: --port 8000 > output.log 2>&1 &   
 
-
-import os,random
-#import requests  importer le package
+import os,random, sqlite3
 from fastapi import FastAPI
 app = FastAPI()
 
 @app.get("/")
 def read_root():
     return {"message": "Hello, World!"}
+
+@app.get ("/games")  #http://127.0.0.1:8000/games
+def read_games():
+
+    conn = sqlite3.connect("steam_games_info.db")
+    cursor = conn.cursor()
+
+    try : cursor.execute("""select game, release_date, price from games where Game is not null order by 1 asc ;""") 
+    except Exception as e : 
+        print(e)
+        return f"error :\n {e}"
+
+    liste_game = [k for k in cursor.fetchall()]
+    conn.close()
+
+    return liste_game
+
+
+
 
 @app.get("/items/{item_id}")             #on y accède donc par /items/450?q=lol
 def read_item(item_id: int, q: str = None):
