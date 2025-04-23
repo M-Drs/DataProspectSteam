@@ -1,17 +1,18 @@
-[tool.poetry]
+[project]
 name = "dataprospectsteam"
 version = "0.1.0"
 description = ""
-authors = ["M-Drs <martin.deyres@gmail.com>"]
+authors = [
+    {name = "M-Drs",email = "martin.deyres@gmail.com"}
+]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.12"
-deltalake = "^0.25.5"
-pyarrow = "^19.0.1"
-fastapi = "^0.115.12"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi (>=0.115.12,<0.116.0)",
+    "uvicorn (>=0.34.2,<0.35.0)"
+]
 
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"

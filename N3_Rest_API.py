@@ -1,3 +1,14 @@
+#comment lancer ce fichier?
+# sudo mkdir /home/break/work/my_fastapi_project
+# cd /home/break/work/my_fastapi_project
+# sudo python3 -m venv venv
+# pip install fastapi uvicorn  
+# ==========================
+# puis, à relancer à chaque fois
+# source venv/bin/activate
+# nohup uvicorn main:app --reload --host 0.0.0.0 --host :: --port 8000 > output.log 2>&1 &   
+
+
 import os,random
 #import requests  importer le package
 from fastapi import FastAPI
