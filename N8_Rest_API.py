@@ -6,7 +6,7 @@
 # ==========================
 # puis, à relancer à chaque fois
 # source venv/bin/activate
-# nohup uvicorn main:app --reload --host 0.0.0.0 --host :: --port 8000 > output.log 2>&1 &   
+# nohup uvicorn N8_Rest_API:app --reload --host 0.0.0.0  --port 8000 > output.log 2>&1 &   
 
 import os,random, sqlite3
 from fastapi import FastAPI
