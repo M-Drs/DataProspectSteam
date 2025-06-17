@@ -8,7 +8,8 @@
 # source venv/bin/activate
 # nohup uvicorn N7_Rest_API:app --reload --host 0.0.0.0  --port 8000 > output.log 2>&1 &   
 
-import os,random, sqlite3, aiofiles
+import os,random, sqlite3 
+# import aiofiles
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import StreamingResponse
 app = FastAPI()
@@ -72,50 +73,50 @@ def menu():
         }
         
         
-@app.get("/stream/{filename}")
-async def stream_video(filename: str, request: Request):
-    directory_path = "/home/break/disques/ssd2/Videos"
-    file_path = os.path.join(directory_path, filename)
+# @app.get("/stream/{filename}")
+# async def stream_video(filename: str, request: Request):
+#     directory_path = "/home/break/disques/ssd2/Videos"
+#     file_path = os.path.join(directory_path, filename)
 
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="File not found")
+#     if not os.path.exists(file_path):
+#         raise HTTPException(status_code=404, detail="File not found")
 
-    file_size = os.path.getsize(file_path)
-    range_header = request.headers.get("range")
+#     file_size = os.path.getsize(file_path)
+#     range_header = request.headers.get("range")
 
-    start = 0
-    end = file_size - 1
+#     start = 0
+#     end = file_size - 1
 
-    if range_header:
-        # Example of range header: "bytes=0-1023"
-        bytes_range = range_header.strip().lower().replace("bytes=", "").split("-")
-        if bytes_range[0].isdigit():
-            start = int(bytes_range[0])
-        if len(bytes_range) == 2 and bytes_range[1].isdigit():
-            end = int(bytes_range[1])
+#     if range_header:
+#         # Example of range header: "bytes=0-1023"
+#         bytes_range = range_header.strip().lower().replace("bytes=", "").split("-")
+#         if bytes_range[0].isdigit():
+#             start = int(bytes_range[0])
+#         if len(bytes_range) == 2 and bytes_range[1].isdigit():
+#             end = int(bytes_range[1])
 
-    # Validate range
-    if start > end or end >= file_size:
-        raise HTTPException(status_code=416, detail="Invalid range")
+#     # Validate range
+#     if start > end or end >= file_size:
+#         raise HTTPException(status_code=416, detail="Invalid range")
 
-    chunk_size = end - start + 1
+#     chunk_size = end - start + 1
 
-    async def iter_file():
-        async with aiofiles.open(file_path, "rb") as f:
-            await f.seek(start)
-            remaining = chunk_size
-            while remaining > 0:
-                chunk = await f.read(min(4096, remaining))
-                if not chunk:
-                    break
-                remaining -= len(chunk)
-                yield chunk
+#     async def iter_file():
+#         async with aiofiles.open(file_path, "rb") as f:
+#             await f.seek(start)
+#             remaining = chunk_size
+#             while remaining > 0:
+#                 chunk = await f.read(min(4096, remaining))
+#                 if not chunk:
+#                     break
+#                 remaining -= len(chunk)
+#                 yield chunk
 
-    headers = {
-        "Content-Range": f"bytes {start}-{end}/{file_size}",
-        "Accept-Ranges": "bytes",
-        "Content-Length": str(chunk_size),
-        "Content-Type": "video/x-matroska",  # Adjust MIME type as needed, e.g. "video/webm"
-    }
+#     headers = {
+#         "Content-Range": f"bytes {start}-{end}/{file_size}",
+#         "Accept-Ranges": "bytes",
+#         "Content-Length": str(chunk_size),
+#         "Content-Type": "video/x-matroska",  # Adjust MIME type as needed, e.g. "video/webm"
+#     }
 
-    return StreamingResponse(iter_file(), status_code=206 if range_header else 200, headers=headers)
+#     return StreamingResponse(iter_file(), status_code=206 if range_header else 200, headers=headers)
