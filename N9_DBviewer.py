@@ -44,3 +44,5 @@ if __name__ == "__main__":
     #     n+=1
     # conn.commit()    
     # conn.close()
+
+#requête pour trouver quel jeux n'ont pas leur photo dans le datalake!!!!!!!!!!

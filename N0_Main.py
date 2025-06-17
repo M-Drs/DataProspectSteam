@@ -5,7 +5,7 @@ import time, random
 if __name__ == "__main__":
     
     i = last_max_id()
-    while i < 900:
+    while i < 9000:
         Resultat = get_steam_details(i)
         if "Error: API request failed" in Resultat:  
             time.sleep(random.uniform(10,15))
