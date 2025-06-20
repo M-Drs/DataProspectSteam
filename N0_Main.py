@@ -1,4 +1,4 @@
-from N1_Call_API import get_steam_details, get_steam_review_score, get_steam_all_reviews ; from N2_Insert_BDD import insert_games_in_database, insert_game_review_score ; from N9_DBviewer import last_max_id,liste_App_ID
+from N1_Call_API import get_steam_details, get_steam_review_score, get_steam_all_reviews ; from N2_Insert_BDD import insert_games_in_database, insert_game_review_score ;from N3_Data_Upload import uploadToServer; from N9_DBviewer import last_max_id,liste_App_ID
 import time, random
 
 
@@ -23,3 +23,6 @@ if __name__ == "__main__":
 
     for APP_ID,steam_cursor in (liste_ID := liste_App_ID()) :
         get_steam_all_reviews(APP_ID,steam_cursor)
+
+    uploadToServer()
+    
