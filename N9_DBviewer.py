@@ -39,7 +39,8 @@ def custom_query():
     cursor = conn.cursor()
 
     try:
-        cursor.execute("""SELECT COUNT(*) FROM (SELECT DISTINCT ID FROM reviews);""")
+        # cursor.execute("""SELECT COUNT(*) FROM (SELECT DISTINCT ID FROM reviews);""")
+        cursor.execute("""SELECT review, funvotes FROM reviews order by 2 desc limit 100;""")
         resultats = cursor.fetchall()
         
         # Récupère les noms de colonnes
@@ -52,7 +53,7 @@ def custom_query():
         # Affiche chaque ligne
         for ligne in resultats:
             print("\t".join(str(x) for x in ligne))
-
+            print("-" * 100)
     except Exception as e:
         print("Erreur SQL :", e)
 
