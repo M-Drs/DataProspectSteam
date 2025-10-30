@@ -11,7 +11,7 @@ def uploadToServer():
     remote_path = os.getenv("REMOTE_PATH")
     port = os.getenv("PORT")
 
-    # Build scp command
+    # Build secure copy protocol command
     scp_command = [
         "scp",
         "-P", port,

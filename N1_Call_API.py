@@ -69,9 +69,10 @@ def get_steam_all_reviews(APP_ID,steam_cursor="*"):
         "review_type": "all",  # "positive", "negative", or "all"
         "num_per_page": 100,
         "cursor": steam_cursor }
-    
+    i=1
     print(steam_cursor)
-    while True:
+    while i < 10 :
+        i += 1
         response = requests.get(BASE_URL, params=PARAMS)
         if response.status_code != 200:
             print(f"Error: Received status code {response.status_code}")

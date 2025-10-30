@@ -32,10 +32,39 @@ def liste_App_ID():
     if liste_id is None : return [(10,None)]
     return liste_id
 
+
+
+def custom_query():
+    conn = sqlite3.connect("steam_games_info.db")
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""SELECT COUNT(*) FROM (SELECT DISTINCT ID FROM reviews);""")
+        resultats = cursor.fetchall()
+        
+        # Récupère les noms de colonnes
+        colonnes = [description[0] for description in cursor.description]
+
+        # Affiche les noms de colonnes
+        print("\t".join(colonnes))
+        print("-" * 60)
+
+        # Affiche chaque ligne
+        for ligne in resultats:
+            print("\t".join(str(x) for x in ligne))
+
+    except Exception as e:
+        print("Erreur SQL :", e)
+
+    finally:
+        conn.close()
+
 if __name__ == "__main__":
 
-    print(last_max_id())
-    print(liste_App_ID())
+
+
+    custom_query()
+
 
     # conn = sqlite3.connect("steam_games_info.db")
     # cursor = conn.cursor()

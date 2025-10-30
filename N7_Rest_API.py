@@ -65,11 +65,10 @@ def menu():
     
     
 
-
     except Exception as e:
         return {
             "status": "error",
-            "type": str(e)
+            "type": "str(e) chut"
         }
         
         
