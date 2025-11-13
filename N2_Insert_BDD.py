@@ -129,7 +129,7 @@ def load_datalake(image, Resultat):
 
     cursor.execute('''
             INSERT or replace INTO datalake_metadata (APP_ID, Name, json_name, json_size, json_created_at, json_modified_at)
-            VALUES (?, ?, ?, ?, ?, ?,?,?,?,?)''', (APP_ID, name, file_name, file_size, created_at, modified_at))
+            VALUES (?, ?, ?, ?, ?, ?)''', (APP_ID, name, file_name, file_size, created_at, modified_at))
     conn.commit()
 
 # Here to store image
@@ -151,8 +151,7 @@ def load_datalake(image, Resultat):
 
         cursor.execute('''
             INSERT or replace INTO datalake_metadata (APP_ID, image_name, image_size, image_created_at, image_modified_at)
-            VALUES (?, ?, ?, ?, ?, ?,?,?,?,?)''', (APP_ID, file_name_img, file_size_img, created_at_img, modified_at_img))
+            VALUES (?, ?, ?, ?, ?)''', (APP_ID, file_name_img, file_size_img, created_at_img, modified_at_img))
         conn.commit()
-
 
 
