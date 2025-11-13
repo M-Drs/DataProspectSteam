@@ -12,14 +12,13 @@ if __name__ == "__main__":
         if "Error: API request failed" in Resultat:  
             time.sleep(random.uniform(10,15))
             i -= 1
-        elif Resultat["Code_retour"] == False :
+        elif Resultat["Code_retour"] == False : 
             insert_games_in_database(Resultat)
 
         elif Resultat["Code_retour"] == True :
             insert_games_in_database(Resultat)
             image=get_image(Resultat["Header_image"])
-            if image.status_code == 200: 
-                load_datalake(image, Resultat)
+            if image.status_code == 200: load_datalake(image, Resultat)
 
             review_score_general = get_steam_review_score(i)
             insert_game_review_score(i, review_score_general)
