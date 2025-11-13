@@ -92,7 +92,11 @@ def insert_last_cursor_position(APP_ID,steam_cursor):
         print(f"Cursor updaté : {row}\n")
     conn.close()
 
-def load_datalake(data,response_image,name, APP_ID):
+def load_datalake(image, Resultat):
+
+    APP_ID=Resultat["APP_ID"]
+    data= Resultat["Data"]
+    name= Resultat["Game"]
 
     data_lake_dir = 'datalake'
     if not os.path.exists(data_lake_dir):
@@ -120,14 +124,14 @@ def load_datalake(data,response_image,name, APP_ID):
     with open(file_path, "w") as file:
         json.dump(data, file, indent=4)
 
-    if "Content-Type" in response_image.headers:
-        content_type = response_image.headers["Content-Type"]
+    if "Content-Type" in image.headers:
+        content_type = image.headers["Content-Type"]
         if content_type.startswith("image/"):
             ext = "." + content_type.split("/")[-1]  # Extract extension 
     
     file_path_img = os.path.join(data_lake_dir, APP_ID+"_header"+ext)
     with open(file_path_img, "wb") as file:  # Open in binary write mode
-            for chunk in response_image.iter_content(1024):  # Read in chunks
+            for chunk in image.iter_content(1024):  # Read in chunks
                 file.write(chunk)
     print(f"Image saved as {file_path}")
 

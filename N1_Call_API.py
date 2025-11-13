@@ -1,5 +1,5 @@
 import requests, time, random
-from N2_Insert_BDD import load_datalake, insert_review_in_database, insert_last_cursor_position
+from N2_Insert_BDD import insert_review_in_database, insert_last_cursor_position
 
 
 def get_steam_details(APP_ID):
@@ -30,16 +30,17 @@ def get_steam_details(APP_ID):
     metacritic_score = info.get("metacritic",{}).get("score") 
     metacritic_url = info.get("metacritic",{}).get("url") 
 
+    print(f"\nAPP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {header_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
+    return {"Code_retour" : True,"Full_reponse" : response,"Data":data,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Gratuit": gratuit,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
+            "Header_image": header_image,"Supported_languages": supported_languages,"Platforms": ' | '.join(platforms),"Metacritic_score": metacritic_score,"Metacritic_url": metacritic_url}
 
+
+def get_image(header_image):
     response_image = requests.get(header_image, stream=True)  # Stream to handle large files
     print(response_image)
     print(response_image.status_code)
-    if response_image.status_code == 200: 
-        load_datalake(data, response_image, name, APP_ID)
+    return(response_image)
 
-    print(f"\nAPP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {header_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
-    return {"Code_retour" : True,"Full_reponse" : response,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Gratuit": gratuit,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
-            "Header_image": header_image,"Supported_languages": supported_languages,"Platforms": ' | '.join(platforms),"Metacritic_score": metacritic_score,"Metacritic_url": metacritic_url}
 
 def get_steam_review_score(APP_ID):
     
