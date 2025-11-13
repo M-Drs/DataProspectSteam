@@ -6,7 +6,8 @@ def get_steam_details(APP_ID):
     
     APP_ID = str(APP_ID)
     URL = f"https://store.steampowered.com/api/appdetails?appids={APP_ID}"
-    response = requests.get(URL)
+
+    response = requests.get(URL) ; response.encoding = 'utf-8-sig'
     data = response.json()
 
     if response.status_code != 200 or not response.text.strip():
@@ -14,23 +15,15 @@ def get_steam_details(APP_ID):
         return f"Error: API request failed or returned empty response for {APP_ID}"
 
     if data[APP_ID]["success"] == False :
-        #print(f"ID not found : {APP_ID}")
         return {"Code_retour" : False,"APP_ID": APP_ID,"Game": None }
     
-    info = data[APP_ID]["data"]
-    name = info["name"]
-    url_image = info["header_image"]
-    release_date = info["release_date"]["date"]
-    price = info["price_overview"]["final_formatted"] if "price_overview" in info else None
-    gratuit = info["is_free"]
-    platforms = [k for k, v in info["platforms"].items() if v]
-    genres = [genre["description"] for genre in info.get("genres",[])]
-    detailed_description = info["detailed_description"]
-    supported_languages = info.get("supported_languages") 
-    metacritic_score = info.get("metacritic",{}).get("score") 
-    metacritic_url = info.get("metacritic",{}).get("url") 
+    info = data[APP_ID]["data"] ; name = info["name"] ;url_image = info["header_image"]
+    release_date = info["release_date"]["date"] ; price = info["price_overview"]["final_formatted"] if "price_overview" in info else None 
+    gratuit = info["is_free"] ; platforms = [k for k, v in info["platforms"].items() if v] ; genres = [genre["description"] for genre in info.get("genres",[])] ; detailed_description = info["detailed_description"]
+    supported_languages = info.get("supported_languages") ; metacritic_score = info.get("metacritic",{}).get("score") ; metacritic_url = info.get("metacritic",{}).get("url") 
 
     print(f"\nAPP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {url_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
+
     return {"Code_retour" : True,"Full_reponse" : response,"Data":data,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Gratuit": gratuit,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
             "Url_image": url_image,"Supported_languages": supported_languages,"Platforms": ' | '.join(platforms),"Metacritic_score": metacritic_score,"Metacritic_url": metacritic_url}
 
@@ -41,8 +34,6 @@ def get_image(url_image):
         print(f"Img fetch : {response_image}")
         return(response_image)
     
-
-
 def get_steam_review_score(APP_ID):
     
     BASE_URL = f"https://store.steampowered.com/appreviews/{APP_ID}"
@@ -58,7 +49,6 @@ def get_steam_review_score(APP_ID):
 
     data = response.json()
     query_summary = data.get("query_summary","")
-    #print(query_summary["num_reviews"], query_summary["review_score"], query_summary["total_positive"], query_summary["total_negative"])
     return (query_summary)
     
 def get_steam_all_reviews(APP_ID,steam_cursor="*"):

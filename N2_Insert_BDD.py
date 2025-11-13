@@ -20,7 +20,7 @@ def insert_games_in_database(Resultat) :
             Resultat.get("Gratuit"),
             Resultat.get("Genres"),
             Resultat.get("Detailed_description"),
-            Resultat.get("Header_image"),
+            Resultat.get("Url_image"),
             Resultat.get("Supported_languages"),
             Resultat.get("Platforms"),
             Resultat.get("Metacritic_score"),
