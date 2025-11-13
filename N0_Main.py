@@ -14,11 +14,10 @@ if __name__ == "__main__":
             i -= 1
         elif Resultat["Code_retour"] == False :
             insert_games_in_database(Resultat)
-            
+
         elif Resultat["Code_retour"] == True :
             insert_games_in_database(Resultat)
-        
-            image=get_image(Resultat.get("Header_image"))
+            image=get_image(Resultat["Header_image"])
             if image.status_code == 200: 
                 load_datalake(image, Resultat)
 
