@@ -127,9 +127,12 @@ def load_datalake(image, Resultat):
     created_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getctime(file_path)))
     modified_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(file_path)))
 
+
     cursor.execute('''
-            INSERT or update INTO datalake_metadata (APP_ID, Name, json_name, json_size, json_created_at, json_modified_at)
-            VALUES (?, ?, ?, ?, ?, ?)''', (APP_ID, name, file_name, file_size, created_at, modified_at))
+            INSERT INTO datalake_metadata (APP_ID, Name, json_name, json_size, json_created_at, json_modified_at) VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(APP_ID)  DO UPDATE SET Name = excluded.Name, json_name = excluded.json_name,  json_size = excluded.json_size, json_created_at = excluded.json_created_at, 
+            json_modified_at = excluded.json_modified_at;''', (APP_ID, name, file_name, file_size, created_at, modified_at))
+
     conn.commit()
 
 # Here to store image
@@ -149,9 +152,11 @@ def load_datalake(image, Resultat):
         created_at_img = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getctime(file_path_img)))
         modified_at_img = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(file_path_img)))
 
+
         cursor.execute('''
-            INSERT or update INTO datalake_metadata (APP_ID, image_name, image_size, image_created_at, image_modified_at)
-            VALUES (?, ?, ?, ?, ?)''', (APP_ID, file_name_img, file_size_img, created_at_img, modified_at_img))
+            UPDATE datalake_metadata SET image_name = ?,  image_size = ?,  image_created_at = ?, image_modified_at = ?
+            WHERE APP_ID = ?''', (file_name_img, file_size_img, created_at_img, modified_at_img, APP_ID))
+        
         conn.commit()
 
 
