@@ -21,8 +21,7 @@ if __name__ == "__main__":
             image=get_image(Resultat["Url_image"])
             load_datalake(image, Resultat)
 
-            review_score_general = get_steam_review_score(i)
-            insert_game_review_score(i, review_score_general)
+            insert_game_review_score(i, get_steam_review_score(i))
 
         i += 1
         time.sleep(random.uniform(0.5,1))
