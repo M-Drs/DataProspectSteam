@@ -19,7 +19,7 @@ def get_steam_details(APP_ID):
     
     info = data[APP_ID]["data"]
     name = info["name"]
-    header_image = info["header_image"]
+    url_image = info["header_image"]
     release_date = info["release_date"]["date"]
     price = info["price_overview"]["final_formatted"] if "price_overview" in info else None
     gratuit = info["is_free"]
@@ -30,16 +30,18 @@ def get_steam_details(APP_ID):
     metacritic_score = info.get("metacritic",{}).get("score") 
     metacritic_url = info.get("metacritic",{}).get("url") 
 
-    print(f"\nAPP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {header_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
+    print(f"\nAPP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {url_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
     return {"Code_retour" : True,"Full_reponse" : response,"Data":data,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Gratuit": gratuit,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
-            "Header_image": header_image,"Supported_languages": supported_languages,"Platforms": ' | '.join(platforms),"Metacritic_score": metacritic_score,"Metacritic_url": metacritic_url}
+            "Url_image": url_image,"Supported_languages": supported_languages,"Platforms": ' | '.join(platforms),"Metacritic_score": metacritic_score,"Metacritic_url": metacritic_url}
 
 
-def get_image(header_image):
-    response_image = requests.get(header_image, stream=True)  # Stream to handle large files
-    print(response_image)
-    print(response_image.status_code)
-    return(response_image)
+def get_image(url_image):
+    if url_image is not None :
+        response_image = requests.get(url_image, stream=True)  # Stream to handle large files
+        print(response_image)
+        print(response_image.status_code)
+        return(response_image)
+    
 
 
 def get_steam_review_score(APP_ID):

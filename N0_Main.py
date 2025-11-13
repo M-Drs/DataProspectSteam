@@ -17,8 +17,8 @@ if __name__ == "__main__":
 
         elif Resultat["Code_retour"] == True :
             insert_games_in_database(Resultat)
-            image=get_image(Resultat["Header_image"])
-            if image.status_code == 200: load_datalake(image, Resultat)
+            image=get_image(Resultat["Url_image"])
+            load_datalake(image, Resultat)
 
             review_score_general = get_steam_review_score(i)
             insert_game_review_score(i, review_score_general)

@@ -115,44 +115,44 @@ def load_datalake(image, Resultat):
             json_created_at TEXT,
             json_modified_at TEXT,
             image_created_at TEXT,
-            image_modified_at TEXT
-        )
-    ''')
+            image_modified_at TEXT)''')
 
-# Function to store raw data and image
+# Function to store raw json
     file_path = os.path.join(data_lake_dir, APP_ID+".json")
     with open(file_path, "w") as file:
         json.dump(data, file, indent=4)
 
-    if "Content-Type" in image.headers:
+    file_name = os.path.basename(file_path)
+    file_size = os.path.getsize(file_path)
+    created_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getctime(file_path)))
+    modified_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(file_path)))
+
+    cursor.execute('''
+            INSERT or replace INTO datalake_metadata (APP_ID, Name, json_name, json_size, json_created_at, json_modified_at)
+            VALUES (?, ?, ?, ?, ?, ?,?,?,?,?)''', (APP_ID, name, file_name, file_size, created_at, modified_at))
+    conn.commit()
+
+# Here to store image
+    if image is not None and "Content-Type" in image.headers:
         content_type = image.headers["Content-Type"]
         if content_type.startswith("image/"):
             ext = "." + content_type.split("/")[-1]  # Extract extension 
     
-    file_path_img = os.path.join(data_lake_dir, APP_ID+"_header"+ext)
-    with open(file_path_img, "wb") as file:  # Open in binary write mode
+        file_path_img = os.path.join(data_lake_dir, APP_ID+"_header"+ext)
+        with open(file_path_img, "wb") as file:  # Open in binary write mode
             for chunk in image.iter_content(1024):  # Read in chunks
                 file.write(chunk)
-    print(f"Image saved as {file_path}")
+        print(f"Image saved as {file_path}")
 
-    
-# Function to store metadata
-    file_name = os.path.basename(file_path)
-    file_size = os.path.getsize(file_path)
-    file_name_img = os.path.basename(file_path_img)
-    file_size_img = os.path.getsize(file_path_img)
+        file_name_img = os.path.basename(file_path_img) 
+        file_size_img = os.path.getsize(file_path_img) 
+        created_at_img = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getctime(file_path_img)))
+        modified_at_img = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(file_path_img)))
 
-    created_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getctime(file_path)))
-    modified_at = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(file_path)))
-    created_at_img = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getctime(file_path_img)))
-    modified_at_img = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(file_path_img)))
-  
-    cursor.execute('''
-        INSERT or replace INTO datalake_metadata (APP_ID, Name, json_name, json_size, json_created_at, json_modified_at, image_name, image_size, image_created_at, image_modified_at)
-        VALUES (?, ?, ?, ?, ?, ?,?,?,?,?)
-    ''', (APP_ID, name, file_name, file_size, created_at, modified_at, file_name_img, file_size_img, created_at_img, modified_at_img))
-
-    conn.commit()
+        cursor.execute('''
+            INSERT or replace INTO datalake_metadata (APP_ID, image_name, image_size, image_created_at, image_modified_at)
+            VALUES (?, ?, ?, ?, ?, ?,?,?,?,?)''', (APP_ID, file_name_img, file_size_img, created_at_img, modified_at_img))
+        conn.commit()
 
 
 
