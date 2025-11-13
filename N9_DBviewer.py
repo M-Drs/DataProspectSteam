@@ -67,12 +67,6 @@ if __name__ == "__main__":
     custom_query()
 
 
-    # conn = sqlite3.connect("steam_games_info.db")
-    # cursor = conn.cursor()
-    # while n:= 790 < 830 :
-    #     cursor.execute(f"""delete from games where APP_ID = {n};""") 
-    #     n+=1
-    # conn.commit()    
-    # conn.close()
 
-#requête pour trouver quel jeux n'ont pas leur photo dans le datalake!!!!!!!!!!
+
+#requête pour trouver quel jeux n'ont pas leur photo dans le datalake

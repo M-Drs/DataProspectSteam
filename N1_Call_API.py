@@ -34,7 +34,7 @@ def get_image(url_image):
         print(f"Img fetch : {response_image}")
         return(response_image)
     
-def get_steam_review_score(APP_ID):
+def get_steam_review_score(APP_ID): 
     
     BASE_URL = f"https://store.steampowered.com/appreviews/{APP_ID}"
     PARAMS = {"json": 1,
