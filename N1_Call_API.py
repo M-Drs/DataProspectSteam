@@ -38,8 +38,7 @@ def get_steam_details(APP_ID):
 def get_image(url_image):
     if url_image is not None :
         response_image = requests.get(url_image, stream=True)  # Stream to handle large files
-        print(response_image)
-        print(response_image.status_code)
+        print(f"Img fetch : {response_image}")
         return(response_image)
     
 
@@ -48,9 +47,9 @@ def get_steam_review_score(APP_ID):
     
     BASE_URL = f"https://store.steampowered.com/appreviews/{APP_ID}"
     PARAMS = {"json": 1,
-        "language": "all",  # Change if needed
-        "review_type": "all",  # positive, negative, or all
-        "cursor": "*"}  # Initial cursor 
+        "language": "all",  
+        "review_type": "all",  
+        "cursor": "*"} 
     
     response = requests.get(BASE_URL, params=PARAMS)
     if response.status_code != 200:
@@ -68,8 +67,8 @@ def get_steam_all_reviews(APP_ID,steam_cursor="*"):
     PARAMS = {
         "json": 1,
         "filter": "recent",  # Can be "all", "recent", or "updated"
-        "language": "all",  # Change if needed
-        "review_type": "all",  # "positive", "negative", or "all"
+        "language": "all",  
+        "review_type": "all",  
         "num_per_page": 100,
         "cursor": steam_cursor }
     i=1
@@ -99,11 +98,6 @@ def get_steam_all_reviews(APP_ID,steam_cursor="*"):
         time.sleep(1.5)
 
 
-        #if not reviews or not cursor: not steam_cursor or        
-        # print(f"Positif: {review["voted_up"]}, Language: {review["language"]}, Votes_up: {review["votes_up"]}")
-        # print(f"{'-'*50}\nUser: {review['author']['steamid']}, Playtime: {review['author']['playtime_forever']} mins, ID_review : {review['recommendationid']}, Language: {review["language"]}")
-        # print(f"Review: {review['review']}")       
-        
 
 if __name__ == "__main__":
     #reviews = fetch_reviews(570)
