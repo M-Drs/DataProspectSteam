@@ -7,22 +7,18 @@ import time, random
 if __name__ == "__main__":
     
     i = last_max_id()
-    while i < 9000:
+    while i < 50000:
         Resultat = get_steam_details(i)
 
-        if "Error: API request failed" in Resultat:  
-            time.sleep(random.uniform(10,15))
-            i -= 1
-        elif Resultat["Code_retour"] == False : 
+        if Resultat == None :  
+            i -= 1 ; time.sleep(random.uniform(10,15))   
+        else : 
             insert_games_in_database(Resultat)
+            if Resultat["Code_retour"] == True :
+                image=get_image(Resultat["Url_image"])
+                load_datalake(image, Resultat)
 
-        elif Resultat["Code_retour"] == True :
-            insert_games_in_database(Resultat)
-            image=get_image(Resultat["Url_image"])
-            load_datalake(image, Resultat)
-
-            insert_game_review_score(i, get_steam_review_score(i))
-
+                insert_game_review_score(i, get_steam_review_score(i))
         i += 1
         time.sleep(random.uniform(0.5,1))
 

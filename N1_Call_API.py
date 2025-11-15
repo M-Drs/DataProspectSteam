@@ -8,11 +8,15 @@ def get_steam_details(APP_ID):
     URL = f"https://store.steampowered.com/api/appdetails?appids={APP_ID}"
 
     response = requests.get(URL) ; response.encoding = 'utf-8-sig'
-    data = response.json()
 
-    if response.status_code != 200 or not response.text.strip():
-        print(f"Error: API request failed or returned empty response for {APP_ID}")
-        return f"Error: API request failed or returned empty response for {APP_ID}"
+    print("\nAPP_ID:",APP_ID ,"Status:", response.status_code,"Content-Type:", response.headers.get("Content-Type"),"Raw text:", response.text[:50])
+
+    # if response.status_code != 200 or not response.text.strip() or  "json" not in content_type := response.headers.get("Content-Type", "").lower() :
+    if response.status_code != 200 or not response.text.strip() or ("json" not in (content_type := response.headers.get("Content-Type", "").lower())):
+        print(f"Error for {APP_ID}")
+        return None
+    
+    data = response.json()
 
     if data[APP_ID]["success"] == False :
         return {"Code_retour" : False,"APP_ID": APP_ID,"Game": None }
@@ -22,7 +26,7 @@ def get_steam_details(APP_ID):
     gratuit = info["is_free"] ; platforms = [k for k, v in info["platforms"].items() if v] ; genres = [genre["description"] for genre in info.get("genres",[])] ; detailed_description = info["detailed_description"]
     supported_languages = info.get("supported_languages") ; metacritic_score = info.get("metacritic",{}).get("score") ; metacritic_url = info.get("metacritic",{}).get("url") 
 
-    print(f"\nAPP_ID {APP_ID}\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {url_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
+    print(f"\nGame: {name}\nRelease Date: {release_date}\nPrice: {price}\nGenres: {' | '.join(genres)}\nHeader_image: {url_image}\nAvailable on: {' | '.join(platforms)}\nmetacritic_score: {metacritic_score}\nmetacritic_url: {metacritic_url}")
 
     return {"Code_retour" : True,"Full_reponse" : response,"Data":data,"APP_ID": APP_ID,"Game": name,"Release_Date": release_date,"Price": price,"Gratuit": gratuit,"Genres": ' | '.join(genres),"Detailed_description": detailed_description,
             "Url_image": url_image,"Supported_languages": supported_languages,"Platforms": ' | '.join(platforms),"Metacritic_score": metacritic_score,"Metacritic_url": metacritic_url}
