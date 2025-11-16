@@ -11,7 +11,7 @@ if __name__ == "__main__":
         Resultat = get_steam_details(i)
 
         if Resultat == None :  
-            i -= 1 ; time.sleep(random.uniform(10,15))   
+            i -= 1 ; time.sleep(random.uniform(20,30))   
         else : 
             insert_games_in_database(Resultat)
             if Resultat["Code_retour"] == True :

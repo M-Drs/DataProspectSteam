@@ -7,12 +7,13 @@ def get_steam_details(APP_ID):
     APP_ID = str(APP_ID)
     URL = f"https://store.steampowered.com/api/appdetails?appids={APP_ID}"
 
-    response = requests.get(URL) ; response.encoding = 'utf-8-sig'
+    try : response = requests.get(URL) ; response.encoding = 'utf-8-sig'
+    except Exception as e: input(f"Request failed for {APP_ID}: {e},press enter to retry") ; return None
 
     print("\nAPP_ID:",APP_ID ,"Status:", response.status_code,"Content-Type:", response.headers.get("Content-Type"),"Raw text:", response.text[:50])
 
     # if response.status_code != 200 or not response.text.strip() or  "json" not in content_type := response.headers.get("Content-Type", "").lower() :
-    if response.status_code != 200 or not response.text.strip() or ("json" not in (content_type := response.headers.get("Content-Type", "").lower())):
+    if response.status_code != 200 or not response.text.strip() or ("json" not in (response.headers.get("Content-Type", "").lower())):
         print(f"Error for {APP_ID}")
         return None
     
