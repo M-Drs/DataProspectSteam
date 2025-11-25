@@ -121,6 +121,7 @@ def load_datalake(image, Resultat):
     file_path = os.path.join(data_lake_dir, APP_ID+".json")
     with open(file_path, "w") as file:
         json.dump(data, file, indent=4)
+    print(f"json saved as {file_path}")
 
     file_name = os.path.basename(file_path)
     file_size = os.path.getsize(file_path)
@@ -145,7 +146,7 @@ def load_datalake(image, Resultat):
         with open(file_path_img, "wb") as file:  # Open in binary write mode
             for chunk in image.iter_content(1024):  # Read in chunks
                 file.write(chunk)
-        print(f"Image saved as {file_path}")
+        print(f"Image saved as {file_path_img}")
 
         file_name_img = os.path.basename(file_path_img) 
         file_size_img = os.path.getsize(file_path_img) 

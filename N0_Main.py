@@ -7,7 +7,7 @@ import time, random
 if __name__ == "__main__":
     
     i = last_max_id()
-    while i < 50000:
+    while i < 500000:
         Resultat = get_steam_details(i)
 
         if Resultat == None :  
@@ -26,3 +26,4 @@ if __name__ == "__main__":
         get_steam_all_reviews(APP_ID,steam_cursor)
 
     uploadToServer()
+

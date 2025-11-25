@@ -11,7 +11,7 @@ def get_steam_details(APP_ID):
     except Exception as e: input(f"Request failed for {APP_ID}: {e},press enter to retry") ; return None
 
     if response.status_code != 200 or not response.text.strip() or ("json" not in (response.headers.get("Content-Type", "").lower())):
-        print("Error APP_ID:",APP_ID,"Status:",response.status_code,"Content-Type:",response.headers.get("Content-Type"),"Raw text:", response.text[:50])
+        print("Error APP_ID:",APP_ID,"Status:",response.status_code,"Content-Type:",response.headers.get("Content-Type"),"Raw text:", response.text[:200])
         return None
     
     data=response.json()
@@ -24,11 +24,15 @@ def get_steam_details(APP_ID):
 
 def get_image(url_image):
     if url_image is not None :
-        response_image = requests.get(url_image, stream=True)  # Stream to handle large files
-        print(f"Img fetch : {response_image}")
-        return(response_image)
+        while i:=0 < 60 :
+            try : response_image = requests.get(url_image, stream=True)  # Stream to handle large files
+            except Exception as e: input(f"Request failed for image: {e}") ; i+=1 ; time.sleep(20) ; continue
+
+            if response_image.status_code != 200 : print("Status_img:",response_image.status_code,"Content-Type_img:",response_image.headers.get("Content-Type"),"Raw text_img:", response_image.text[:200]) ; i+=1 ; time.sleep(20)
+            else : return(response_image)
+    else : return None
     
-def get_steam_review_score(APP_ID): 
+def get_steam_review_score(APP_ID):  
     
     BASE_URL = f"https://store.steampowered.com/appreviews/{APP_ID}"
     PARAMS = {"json": 1,
@@ -36,10 +40,12 @@ def get_steam_review_score(APP_ID):
         "review_type": "all",  
         "cursor": "*"} 
     
-    response = requests.get(BASE_URL, params=PARAMS)
-    if response.status_code != 200:
-        print(f"Error: Received status code {response.status_code}")
-        return (f"Error: Received status code {response.status_code}")
+    try : response = requests.get(BASE_URL, params=PARAMS)
+    except Exception as e: input(f"Request failed for reviews: {e}") 
+
+    if response.status_code != 200 or not response.text.strip() or ("json" not in (response.headers.get("Content-Type", "").lower())):
+        print(f"Error: Received status code {response.status_code}","Content-Type:",response.headers.get("Content-Type"),"Raw text:", response.text[:200])
+        input(f"Request response is weird, enter to ignore and probably crash") 
 
     data = response.json()
     query_summary = data.get("query_summary","")
