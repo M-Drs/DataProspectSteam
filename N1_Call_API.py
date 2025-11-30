@@ -1,4 +1,4 @@
-import requests, time, random
+import requests, time
 from N2_Insert_BDD import insert_review_in_database, insert_last_cursor_position
 
 
@@ -63,12 +63,12 @@ def get_steam_all_reviews(APP_ID,steam_cursor="*"):
         "cursor": steam_cursor }
     i=1
     print(steam_cursor)
-    while i < 10 :
+    while i < 30 :
         i += 1
         response = requests.get(BASE_URL, params=PARAMS)
         if response.status_code != 200:
             print(f"Error: Received status code {response.status_code}")
-            time.sleep(random.uniform(10,15))
+            time.sleep(30) ; continue
 
         data = response.json()
         reviews = data.get("reviews", [])
